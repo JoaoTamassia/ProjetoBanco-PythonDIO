@@ -1,4 +1,5 @@
 clientes = []
+contas = []
 
 def deposito(saldo, valor_deposito, extrato,/):
     if valor_deposito > 0:
@@ -30,6 +31,11 @@ def gerarextrato():
     else:
             print(extrato)
 
+def filtrar(cpf, clientes):
+    usuario_filtrado = [usuario for usuario in clientes if usuario["cpf"] == cpf]
+    return usuario_filtrado[0] if usuario_filtrado else None
+
+
 def novocliente(nome, data_nascimento, cpf, endereco):
     for cliente in clientes:
         if cliente["cpf"] == cpf:
@@ -48,12 +54,21 @@ def novocliente(nome, data_nascimento, cpf, endereco):
     cliente = {"nome_cliente": nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco_formatado}
     clientes.append(cliente)
     return cliente
-    
+def novaconta(agencia, numero_conta, clientes):
+    cpf = input("Digite o cpf do cliente: ")
+    cliente = filtrar(cpf, clientes)
+
+    if cliente:
+        print("Conta criada com sucesso !")
+        return {'agencia': agencia, 'numero_conta': numero_conta, 'cliente': cliente}
+    print("Usuário não encontrado")
+
 menu = """
 [d] Depositar
 [s] Sacar
 [e] Extrato
 [c] Cadastrar Cliente
+[nc] Nova Conta
 [q] Sair
 
 => """
@@ -63,6 +78,7 @@ limite = 500
 extrato = ""
 numero_saques = 0
 LIMITE_SAQUES = 3
+AGENCIA = '0001'
 
 
 
@@ -88,6 +104,13 @@ while True:
         cpf = input("Digite o cpf do cliente: ")
         endereco = input("Digite o endereço do cliente: ")
         novocliente(nome, data, cpf, endereco)
+    
+    elif opcao == "nc":
+        numero = len(contas) + 1
+        conta = novaconta(AGENCIA, numero, clientes)
+
+        if conta:
+            contas.append(conta)
     
     elif opcao == "q":
         break
